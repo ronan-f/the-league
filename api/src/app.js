@@ -1,12 +1,11 @@
-const { PORT } = require('./config/env')
+const { PORT } = require('./config/env');
 
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
 
 const start = async () => {
-    app.listen(port)
-    console.log(`Listening on ${PORT} 🚀🚀🚀`)
-}
+    app.listen(PORT);
+    console.log(`Listening on ${PORT} 🚀🚀🚀`);
+};
 
-start()
+start();
