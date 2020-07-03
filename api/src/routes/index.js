@@ -1,6 +1,9 @@
+const { root, signUp } = require('./lib');
+const { signUpValidation } = require('../middleware/validations');
+const bodyParser = require('body-parser');
+
 module.exports.set = (app) => {
-    app.get('/', (req, res) => {
-        console.log('Hello world');
-        return res.status(200).send('Testing auto deploys');
-    });
+    app.use(bodyParser.json());
+    app.get('/', root);
+    app.post('/sign-up', signUpValidation, signUp);
 };
