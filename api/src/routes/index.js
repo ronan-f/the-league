@@ -1,6 +1,9 @@
 module.exports.set = (app) => {
     app.get('/', (req, res) => {
-        console.log('Hello world');
-        return res.status(200).send('Testing auto deploys');
+        return res
+            .status(200)
+            .json({
+                message: 'Welcome to The League of Extraordinary Film Watchers',
+            });
     });
 };
