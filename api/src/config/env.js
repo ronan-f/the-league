@@ -10,4 +10,9 @@ function getEnv(key) {
 
 module.exports = {
     PORT: getEnv('PORT'),
+    HOST: getEnv('HOST'),
+    DATABASE: getEnv('DATABASE'),
+    DB_USER: getEnv('DB_USER'),
+    PASSWORD: getEnv('PASSWORD'),
+    DB_URL: getEnv('DB_URL'),
 };
