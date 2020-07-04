@@ -1,7 +1,9 @@
 const { USERS_TABLE } = require('../constants');
 const { createError, generateRandomInt } = require('../utils');
 const { user: UserDAL } = require('../DAL');
+const { JWT_SIGNATURE } = require('../config/env');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 class User {
     constructor(db) {
@@ -27,7 +29,7 @@ class User {
                 reset_password_token: 'NULL',
             });
 
-            return user;
+            return { name, email, token: this.generateToken(email) };
         } catch (e) {
             const log = `There was an error when adding a new user to db: ${e}`;
             return createError(500, 'Could not add user to DB', log);
@@ -59,7 +61,9 @@ class User {
             );
         }
 
-        return this.getToken();
+        return {
+            token: this.generateToken(email),
+        };
     }
 
     async hashPassword(plainTextPass) {
@@ -81,6 +85,17 @@ class User {
         } catch (e) {
             return createError(500, '', e);
         }
+    }
+
+    generateToken(email) {
+        console.log('generating JWT...');
+        const data = { email };
+
+        const expiration = { expiresIn: '6h' };
+
+        const token = jwt.sign(data, JWT_SIGNATURE, expiration);
+
+        return token;
     }
 }
 
