@@ -1,5 +1,6 @@
 const { USERS_TABLE } = require('../constants');
 const { createError, generateRandomInt } = require('../utils');
+const { user: UserDAL } = require('../DAL');
 const bcrypt = require('bcrypt');
 
 class User {
@@ -33,6 +34,34 @@ class User {
         }
     }
 
+    async signIn(email, password) {
+        const userFacingError = 'Email/password incorrect.';
+        const user = await UserDAL.getUser(email);
+
+        if (!user) {
+            return createError(
+                400,
+                userFacingError,
+                'No user found with provided email'
+            );
+        }
+
+        const isPasswordCorrect = await this.comparePassword(
+            password,
+            user.password
+        );
+
+        if (!isPasswordCorrect) {
+            return createError(
+                400,
+                userFacingError,
+                'Password provided incorrect'
+            );
+        }
+
+        return this.getToken();
+    }
+
     async hashPassword(plainTextPass) {
         try {
             const saltRounds = generateRandomInt(5, 20);
@@ -40,6 +69,15 @@ class User {
             const hash = await bcrypt.hash(String(plainTextPass), saltRounds);
 
             return hash;
+        } catch (e) {
+            return createError(500, '', e);
+        }
+    }
+
+    async comparePassword(plainTextPass, hash) {
+        try {
+            const result = await bcrypt.compare(plainTextPass, hash);
+            return result;
         } catch (e) {
             return createError(500, '', e);
         }
