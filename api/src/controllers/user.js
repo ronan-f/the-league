@@ -1,5 +1,6 @@
 const { USERS_TABLE } = require('../constants');
-const { createError } = require('../utils');
+const { createError, generateRandomInt } = require('../utils');
+const bcrypt = require('bcrypt');
 
 class User {
     constructor(db) {
@@ -14,6 +15,10 @@ class User {
         }
 
         try {
+            password = await this.hashPassword(password);
+
+            if (password.error) throw Error('Could not hash password');
+
             const user = { name, email, password };
 
             await this.DB(USERS_TABLE).insert({
@@ -25,6 +30,18 @@ class User {
         } catch (e) {
             const log = `There was an error when adding a new user to db: ${e}`;
             return createError(500, 'Could not add user to DB', log);
+        }
+    }
+
+    async hashPassword(plainTextPass) {
+        try {
+            const saltRounds = generateRandomInt(5, 20);
+
+            const hash = await bcrypt.hash(String(plainTextPass), saltRounds);
+
+            return hash;
+        } catch (e) {
+            return createError(500, '', e);
         }
     }
 }
