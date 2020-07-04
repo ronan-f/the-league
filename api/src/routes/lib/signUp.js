@@ -1,4 +1,4 @@
-const { userService } = require('../../controllers');
+const { userService } = require('../../services');
 const { createError } = require('../../utils');
 
 async function signUp(req, res) {

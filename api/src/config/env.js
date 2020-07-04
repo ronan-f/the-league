@@ -15,4 +15,5 @@ module.exports = {
     DB_USER: getEnv('DB_USER'),
     PASSWORD: getEnv('PASSWORD'),
     DB_URL: getEnv('DB_URL'),
+    JWT_SIGNATURE: getEnv('JWT_SIGNATURE'),
 };
